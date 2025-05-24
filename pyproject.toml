@@ -1,6 +1,11 @@
 [build-system]
-requires = ["scikit-build-core", "pybind11"]
+requires = [
+    "scikit-build-core>=0.7.0",  # Core build system
+    "pybind11>=2.11.0",        # For pybind11 headers and CMake helpers
+]
 build-backend = "scikit_build_core.build"
+backend-path = ["."] 
+
 
 [project]
 name = "mir-flare"
@@ -56,5 +61,7 @@ docs = [
     "breathe"
 ]
 
+
 [tool.scikit-build]
-wheel.packages = ["flare"]
+# Tell scikit-build-core where to find the CMakeLists.txt
+cmake.source-dir = "."
