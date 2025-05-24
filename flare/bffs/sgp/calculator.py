@@ -1,16 +1,12 @@
-from ase.calculators.calculator import Calculator, all_changes
-from flare.utils import NumpyEncoder
-import warnings
-
-try:
-    from ._C_flare import Structure
-except Exception as e:
-    warnings.warn(f"Cannot import _C_flare: {e.__class__.__name__}: {e}")
-
-from .sparse_gp import SGP_Wrapper
-import numpy as np
-import time, json
+import json
 from copy import deepcopy
+
+import numpy as np
+from ase.calculators.calculator import Calculator, all_changes
+from flare_pp import Structure
+
+from flare.utils import NumpyEncoder
+from .sparse_gp import SGP_Wrapper
 
 
 class SGP_Calculator(Calculator):

@@ -1,25 +1,26 @@
-import time, os, shutil, glob, subprocess, sys, json
-from copy import deepcopy
-import pytest
-import pkgutil, pyclbr
 import importlib
 import inspect
-import numpy as np
+import json
+import os
+import pkgutil
+import pyclbr
+import sys
 
-from flare.learners.otf import OTF
-from flare.md.fake import FakeDFT
-
-from ase import units
 import ase.calculators as ase_calculators
+import numpy as np
+import pytest
+import yaml
+from ase import io
+from ase import units
 from ase.md.velocitydistribution import (
     MaxwellBoltzmannDistribution,
     Stationary,
     ZeroRotation,
 )
-from ase import io
 from ase.symbols import symbols2numbers
 
-import yaml
+from flare.learners.otf import OTF
+from flare.md.fake import FakeDFT
 
 
 def get_super_cell(atoms_config):
@@ -190,8 +191,10 @@ def get_sgp_calc(flare_config):
     """
     Return a SGP_Calculator with sgp from SparseGP
     """
-    from flare.bffs.sgp._C_flare import NormalizedDotProduct, SquaredExponential
-    from flare.bffs.sgp._C_flare import B2, B3, TwoBody, ThreeBody, FourBody
+
+    from flare_pp import (Structure, SparseGP,NormalizedDotProduct, SquaredExponential,
+                          B2, B3, TwoBody, ThreeBody, FourBody)
+
     from flare.bffs.sgp import SGP_Wrapper
     from flare.bffs.sgp.calculator import SGP_Calculator
 

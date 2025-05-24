@@ -1,11 +1,14 @@
-from lammps import lammps
-import ase, os, numpy as np, sys
-from typing import Union, Optional, Callable, Any, List
-from flare.bffs.sgp._C_flare import Structure, SparseGP
-from flare.bffs.sgp.sparse_gp import optimize_hyperparameters
-from flare.bffs.sgp.calculator import sort_variances
 import logging
 import time
+from typing import Union, Optional, Callable, List
+
+import ase
+import numpy as np
+from flare_pp import SparseGP, Structure
+from lammps import lammps
+
+from flare.bffs.sgp.calculator import sort_variances
+from flare.bffs.sgp.sparse_gp import optimize_hyperparameters
 
 
 def transform_stress(stress: List[List[float]]) -> List[List[float]]:

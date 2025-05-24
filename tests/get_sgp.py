@@ -1,5 +1,5 @@
 import numpy as np
-from flare.bffs.sgp._C_flare import NormalizedDotProduct, DotProduct, B2
+from flare_pp import NormalizedDotProduct, DotProduct, B2
 from flare.bffs.sgp import SGP_Wrapper
 from flare.bffs.sgp.calculator import SGP_Calculator
 from flare.atoms import FLARE_Atoms

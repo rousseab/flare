@@ -8,10 +8,7 @@ from ase import Atoms
 from flare.atoms import FLARE_Atoms
 from flare.utils import NumpyEncoder
 
-try:
-    from ._C_flare import SparseGP, Structure, NormalizedDotProduct, B2, DotProduct
-except Exception as e:
-    warnings.warn(f"Cannot import _C_flare: {e.__class__.__name__}: {e}")
+from flare_pp import SparseGP, Structure, NormalizedDotProduct, B2, DotProduct
 
 
 class SGP_Wrapper:
