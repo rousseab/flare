@@ -1,9 +1,12 @@
-cmake_minimum_required(VERSION 3.18...3.26)
+cmake_minimum_required(VERSION 4.0)
 
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
 project(flare LANGUAGES CXX)
+#project(${SKBUILD_PROJECT_NAME} VERSION ${SKBUILD_PROJECT_VERSION} LANGUAGES CXX)
+#  message(STATUS "The project name is : ${SKBUILD_PROJECT_NAME}")
+
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules/)
 
@@ -13,7 +16,9 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(CMAKE_OSX_ARCHITECTURES "x86_64")
+# TODO: let CMAKE detect which architecture its on
+#set(CMAKE_OSX_ARCHITECTURES "x86_64")
+set(CMAKE_OSX_ARCHITECTURES "arm64") # Apple Silicon machines
 
 if(NOT CMAKE_BUILD_TYPE)
   message(STATUS "[flare] CMAKE_BUILD_TYPE not specified, setting it to "
@@ -43,16 +48,8 @@ endif()
 # Json
 ################################################################################
 
-FetchContent_Declare(json
-    GIT_REPOSITORY https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent
-    SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/External/json
-    GIT_TAG v3.9.1)
-
-FetchContent_GetProperties(json)
-FetchContent_Populate(json)
-add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR})
-include_directories(${json_SOURCE_DIR})
-
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz)
+FetchContent_MakeAvailable(json)
 
 # Eigen3
 ################################################################################
@@ -77,7 +74,7 @@ set(PYBIND11_FINDPYTHON ON)
 FetchContent_Declare(
     pybind11
     GIT_REPOSITORY https://github.com/pybind/pybind11
-    GIT_TAG v2.13.0
+    GIT_TAG v2.13.6
 )
 FetchContent_MakeAvailable(pybind11)
 ###############################################################################
@@ -108,7 +105,7 @@ set(FLARE_SOURCES
     src/flare_pp/kernels/squared_exponential.cpp)
 
 set(PYBIND_SOURCES
-    src/ace_binding.cpp)
+    src/flare_pp/ace_binding.cpp)
 
 # Include sources.
 include_directories(
@@ -162,10 +159,14 @@ if(NOT DEFINED ENV{NO_LAPACK})
   endif()
 endif()
 
-pybind11_add_module(flare_module ${PYBIND_SOURCES})
-target_link_libraries(flare_module PUBLIC flare)
-set_target_properties(flare_module PROPERTIES OUTPUT_NAME "_C_flare")
-install(TARGETS flare_module LIBRARY DESTINATION flare/bffs/sgp)
+
+# The PYBIND11_MODULE in src/flare_pp/ace_binding is creating a module named _C_flare. 
+# The exact same name must be used here.
+
+pybind11_add_module(_C_flare MODULE ${PYBIND_SOURCES})
+find_package(Python COMPONENTS Interpreter Development REQUIRED)
+target_link_libraries(_C_flare PUBLIC flare)
+install(TARGETS _C_flare LIBRARY DESTINATION flare_pp) # CMake variable for library installation directory
 
 # Add test directory.
 if(NOT DEFINED SKBUILD)
