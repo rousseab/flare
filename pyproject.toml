@@ -65,3 +65,5 @@ docs = [
 [tool.scikit-build]
 # Tell scikit-build-core where to find the CMakeLists.txt
 cmake.source-dir = "."
+wheel.packages = ["src/flare_pp"]
+
