@@ -33,6 +33,28 @@ do
 done
 
 echo '
+################################################################################
+# Add Eigen3 as a dependency for FLARE
+################################################################################
+include(ExternalProject)
+
+ExternalProject_Add(
+    eigen_project
+    SOURCE_DIR "${CMAKE_BINARY_DIR}/External/Eigen3"
+    URL "https://github.com/eigenteam/eigen-git-mirror/archive/3.3.7.tar.gz"
+    URL_HASH MD5=77a2c934eaf35943c43ee600a83b72df
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ""
+)
+ExternalProject_Get_Property(eigen_project SOURCE_DIR)
+add_library(Eigen3 INTERFACE)
+target_include_directories(Eigen3 SYSTEM INTERFACE ${SOURCE_DIR})
+include_directories(${SOURCE_DIR})
+
+################################################################################
+# Add the FLARE relevant source files
+################################################################################
 target_sources(lammps PRIVATE
     ${LAMMPS_SOURCE_DIR}/cutoffs.cpp
     ${LAMMPS_SOURCE_DIR}/lammps_descriptor.cpp
